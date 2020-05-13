@@ -1,0 +1,1181 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{bbm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{enumerate}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%  
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ (\hmwkClassInstructor): \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework\ \#5}
+\newcommand{\hmwkDueDate}{May 15, 2020}
+\newcommand{\hmwkClass}{Reinforcement Learning}
+\newcommand{\hmwkClassInstructor}{Professor Ziyu Shao}
+\newcommand{\hmwkAuthorName}{Junjie He}
+\newcommand{\hmwkAuthorID}{2019233152}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 11:59am}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor}}
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}\\ \hmwkAuthorID}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+\begin{homeworkProblem}[1]
+    % Harvard Textbook BH (the first edition): Chapter 11, Problem 2 \\
+    \textbf{Solution}
+    \begin{enumerate}[(a)]
+        \item 
+        % \begin{equation}
+        %     v_{\pi_*}(s) = \sum_{a\in \mathcal{A}}\pi_*(a|s)q_{*}(s,a^*) = \sum_{a\in \mathcal{A}}\pi_*(a|s)q_{*}(s,a^*)
+        % \end{equation}, where $\pi_*$ is optimal policy. 
+        We have $$\pi_*(a|s)=\begin{cases}
+            1\quad if\; a =\arg\max_{a\in\mathcal{A}}q_*(s,a)\\
+            0\quad otherwise
+        \end{cases}$$
+        \begin{equation}
+        \begin{aligned}
+            v_*(s) &= \max_a q_*(s,a)\\
+            &= R_s^{a^*} + \gamma \sum_{s'\in \mathcal{S}} P_{ss'}^{a^*}q_*(s',a^*)      
+        \end{aligned}
+        \end{equation}
+        We can obtain $a^*$ form $\pi_*$.
+        In the problem, we have $P_{ss'}^{a^*} = 1$, since actions are deterministic.\\
+        For state $G$, 
+        \begin{equation}
+            \begin{aligned}
+                q_*(G,\cdot) = 1 + \gamma \max\{ q_*(G,\cdot)\} = 1 + \gamma q_*(G,\cdot)
+            \end{aligned}
+        \end{equation}
+        Then we can obtain $$q_*(G,\cdot) = \frac{1}{1- \gamma}.$$ 
+        Since $v_*(s) = \max_a q_*(s,a)$, $v_*(G) = q_*(G,\cdot) = \frac{1}{1- \gamma}.$ 
+            \begin{equation}
+            \begin{aligned}
+                v_*(s_{n-1}) &= R_{s_{n-1}}^{a^*} + \gamma \sum_{s'\in \mathcal{S}} P_{s_{n-1}s'}^{a^*}q_*(s',a^*) = 0 + \gamma q_*(G,\cdot) = \frac{\gamma}{1- \gamma}\\
+                v_*(s_{n-2}) &= 0 + \gamma q_*(s_{n-1},a^*) = \frac{\gamma^2}{1- \gamma} \\
+                \vdots\\
+                v_*(s_{n-t}) &= 0 + \gamma q_*(s_{n-t+1},a^*) = \frac{\gamma^t}{1- \gamma}\\
+                \vdots\\
+                v_*(s_{1}) &= 0 + \gamma q_*(s_{2},a^*) = \frac{\gamma^{n-1}}{1- \gamma}
+            \end{aligned}
+        \end{equation}
+        % \begin{equation}
+        %     \begin{aligned}
+
+        %     \end{aligned}
+        % \end{equation}
+        
+
+        % Then we can easily get $$v_*(s_t) = \E[\sum_{k=0}^{n-t-1}\gamma^k r_{t+k+1}]$$. Since taking any action from the goal state $G$ earns a reward of $r = +1$ 
+        % and the agent stays in state $G$. Otherwise, each move has zero reward ($r = 0$). $$v_*(s_t) = \gamma^{n-t-1},t=1,...,n-1$$ $$v_*(G)=0$$
+        \item If $\gamma =0$, value of $\gamma$ does not change the ordering of states, so the optimal policy
+        is the same; however, the value of the value function depends on $\gamma$. If $\gamma =0$ then, policy $\pi(s) = a_0,\forall s$ is still an optimal policy; however, 
+        this is not the only optimal policy. For example, $\pi(s_1) = a_1$ is also a optimal policy.
+        \item No effect on the optimal policy. Adding a constant $c$ to all the rewards only changes
+        the value of each state by a constant $v_c$ for any policy $\pi$:
+        \begin{equation}
+            \begin{aligned}
+                v^\pi_{new}(s_i) &=\sum_{t=0}^\infty \gamma^t (r_t+c)\\ 
+                &=\sum_{t=0}^\infty \gamma^t r_t+ \sum_{t=0}^\infty \gamma^t c \\
+                &=v^\pi_{old}(s_i) + \frac{c}{1-\gamma}
+            \end{aligned}
+        \end{equation}, since $\sum_{t=0}^\infty x^t = \frac{1}{1-x},$ when $x\in [-1,1]$.
+        \item         
+        \begin{equation}
+                \begin{aligned}
+                    v^\pi_{new}(s_i) &=\sum_{t=0}^\infty \gamma^t a(r_t+c)\\ 
+                    &=a \sum_{t=0}^\infty \gamma^t r_t+ a\sum_{t=0}^\infty \gamma^t c \\
+                    &=av^\pi_{old}(s_i) + \frac{ac}{1-\gamma}
+                \end{aligned}
+            \end{equation}
+        So if $a>0$ then the optimal policy will not change, and the value of the new optimal policy is a linear mapping of the previous optimal value function 
+        $av_*(s_i)+ \frac{ac}{1-\gamma}$.
+If $a = 0$ then all states have reward 0 and any policy is the optimal policy, and the optimal
+value of all states is 0.
+If $a < 0$, any policy that never reaches to the state G is the optimal policy with value $\frac{ac}{1-\gamma}$
+for all states $s_i$ and $\frac{a(c+1)}{1-\gamma}$ for state G.
+
+
+    \end{enumerate}
+%     \begin{enumerate}[(a)]
+%         \item \begin{equation}
+%             \begin{aligned}
+%                 \E(N_{\left\{ X_i=3 \right\}}) &= \sum_{i=0}^9 \mathbb{1}_{\{ X_i=3\}} \\
+%                 &= P(X_0=3)+\sum_{i=1}^9 P(X_i=3) 
+%             \end{aligned}
+%         \end{equation}
+%         Since $P(X_0 = i) = s_i$, $$P(X_1=3) = \sum_{i=1}^M P(X_1=3 | X_0=i)P(X_0=i) = \sum_{i=1}^M q_{i3}s_i.$$
+
+%         $$P(X_2=3) = \sum_{j=1}^M P(X_2=3 | X_1=j)P(X_0=j) = \sum_{j=1}^M q_{j3} \sum_{i=1}^M q_{ij}s_i$$
+%         Then we can rewrite as 
+%         $$P(X_2=3) = \left( s_1, s_2,...,s_M \right)Q(q_{13},q_{23},\ldots,q_{M3})^T$$
+%         So \begin{equation}
+%             \begin{aligned}
+%                 P(X_0=3)+\sum_{i=1}^9 P(X_i=3) &= s_3 + \sum_{i=1}^9 \left( s_1, s_2,...,s_M \right)Q^{i-1}(q_{13},q_{23},\ldots,q_{M3})^T \\
+%                 &= s_3 + (\sum_{i=1}^9 \left( s_1, s_2,...,s_M \right)Q^{i-1}) (q_{13},q_{23},\ldots,q_{M3})^T
+%             \end{aligned}
+%         \end{equation}
+%         Since $s$ is stationary distribution, $sQ = s$. Hence,
+%         $$\sum_{i=1}^9 \left( s_1, s_2,...,s_M \right)Q^{i-1} = \sum_{i=1}^9 s $$
+%         $$\left( s_1, s_2,...,s_M \right)(q_{13},q_{23},\ldots,q_{M3})^T = s_3$$
+%         $$\E(N_{\left\{ X_i=3 \right\}}) = s_3 + 9s_3 = 10s_3$$
+%         \item  For $M=3$, the state of $X_n$ is $\{ 1,2,3 \}$. Then the state of $Y_n$ is $\{ 0,2\}$, i.e. the $Y_n$ merging states 1 and 2 of the $X_n$-chain into one state $0$. 
+%         To hold markov property, history of $X_n$ does not affect $X_{n+1}$. If $Y_n$ is markov chain then the history does not affect $Y_{n+1}$. 
+%         Knowing the history of $Y_n$'s means knowing when the $X_n$-chain is in state 3, without being able to distinguish state 1 from state 2.
+% If $q_{13} = q_{23}$, then $Y_n$ is Markov since given $Y_n$, even knowing the past $X_0,... ,X_n$ does
+% not affect the transition probabilities. But if $q_{13} \neq q_{23}$, then the $Y_n$ past history can
+% give useful information about $X_n$, affecting the transition probabilities.
+% $$Q = \left[\begin{matrix}
+%     1/4 & 1/2&1/4 \\
+%     1/4 &1/2&1/4 \\
+%     1/3 & 1/3 &1/3
+% \end{matrix} \right]$$, $Y_n$ is markov chain.
+% $$
+% Q = \left[\begin{matrix}
+%     1/4 & 1/4&1/2 \\
+%     1/4 &1/2&1/4 \\
+%     1/3 & 1/3 &1/3
+% \end{matrix} \right]
+% $$, $Y_n$ is not markov chain.
+%     \end{enumerate}
+
+    
+
+\end{homeworkProblem}
+
+
+%
+% Non sequential homework problems
+%
+
+% Jump to problem 5
+\begin{homeworkProblem}[2]
+    % Harvard Textbook BH (the first edition): Chapter 11, Problem 4 \\
+    \textbf{Solution}
+    % \begin{enumerate}[(a)]
+    %     \item The transition matrix $Q$ for this chain is $$\left( \begin{matrix}
+    %         p & 1-p \\
+    %         1-p & p
+    %     \end{matrix}\right)$$
+    %     \item Since transition matrix is a double stochastic matrix, the stationary distribution is uniform distribution, i.e. $s_1=1/2,s_2=1/2$. 
+    %     \item The chain is  an ergodic Markov chain.There exists a unique,
+    %     positive, stationary distribution $s$, which is the limiting distribution of the chain. 
+    %     $$s_j = \lim_{n\rightarrow \infty} Q^n_{ij} ,\text{for all i,j}$$, i.e each row of the limit of $Q^n$ as $n\rightarrow \infty$ is stationary distribution.
+    % \end{enumerate}
+    \begin{enumerate}[(a)]
+        \item \begin{equation}
+            \begin{aligned}
+                v = \sum_{t=0}^\infty \gamma^t r_t = 0 + \sum_{t=1}^\infty \gamma^t 1 = \frac{\gamma}{1-\gamma}
+            \end{aligned}
+        \end{equation}
+    \item \begin{equation}
+        \begin{aligned}
+            v = \sum_{t=0}^\infty \gamma^t r_t = \frac{\gamma^2}{1-\gamma} + \sum_{t=1}^\infty \gamma^t 0 = \frac{\gamma^2}{1-\gamma}
+        \end{aligned}
+    \end{equation}
+    Since $\frac{\gamma^2}{1-\gamma} < \frac{\gamma}{1-\gamma}$, optimal action is $a_1$.
+    \item 
+    For all iterations $v_n(s_2) =0$, so $q(s_,a_0)=\frac{\gamma^2}{1-\gamma}$. 
+    Value iteration keep choosing the sub-optimal action while $q(s_0,a_2)>q(s_0,a_1)$.
+    Value iteration updates are as following,
+    \begin{equation}
+        \begin{aligned}
+           q_{n+1}(s_0,a_1) &= 0+\gamma v_n(s_1)\\
+           v_{n+1}(s_1) &=1+\gamma v_n(s_1) 
+        \end{aligned}
+    \end{equation}
+    \begin{equation}
+        \begin{aligned}
+           q_{n+1}(s_0,a_1) &= 0+\gamma (1+\gamma v_n(s_1))\\
+           &=\gamma(1+\gamma+...+\gamma^{n-1}+\gamma^n v_{n=0}(s_1))\\
+           &=\gamma(\frac{1-\gamma^n}{1-\gamma})
+        \end{aligned}
+    \end{equation}
+    $$ \gamma(\frac{1-\gamma^{n^*}}{1-\gamma}) = \frac{\gamma}{1-\gamma}$$
+    \begin{equation}
+        \begin{aligned}
+          n^* &= \frac{\log (1-\gamma)}{\log(\gamma)}\\
+          &=\frac{\log (1-\gamma)}{\log(1-1+\gamma)}\\
+          &\geq \log(1-\gamma)\frac{2+\gamma-1}{2(\gamma-1)}\\
+          &=-\log(\frac{1}{1-\gamma})\frac{\gamma+1}{-2(1-\gamma)}\\
+          &\geq \frac{1}{2}\log(\frac{1}{1-\gamma})\frac{1}{1-\gamma}
+        \end{aligned}
+    \end{equation}
+    Where the first inequality follows by $\log(1+x)\leq \frac{2x}{2+x}$ for $x\in (-1,0]$, and the $\log$ is natural logarithm.
+    
+\end{enumerate}
+
+\end{homeworkProblem}
+
+\begin{homeworkProblem}[3]
+    \textbf{Solution}
+    \begin{enumerate}[(a)]
+        \item By construction of $\pi$, $\tilde{Q}(s,\pi(s))\geq \tilde{Q}(s,\pi^*(s)).$
+        \begin{equation}
+            \begin{aligned}
+             V^*(s) - Q^*(s,\pi(s)) &= V^*(s) - \tilde{Q}(s,\pi(s)) + \tilde{Q}(s,\pi(s)) -Q^*(s,\pi(s))  \\
+             &\leq V^*(s) - \tilde{Q}(s,\pi^*(s)) + \varepsilon\\
+             &=Q^*(s,\pi^*(s)) - \tilde{Q}(s,\pi^*(s)) + \varepsilon \\
+             &\leq 1\varepsilon
+            \end{aligned}
+        \end{equation}%$\varepsilon$
+        \item   \begin{equation}
+            \begin{aligned}
+             V^*(s) - V_\pi(s) &= V^*(s) - Q^*(s,\pi(s)) + Q^*(s,\pi(s)) - V_\pi(s) \\
+             &\leq 2\varepsilon + Q^*(s,\pi(s)) - Q^\pi(s,\pi(s))\\
+             &=2\varepsilon +\gamma \E_{s'}[V^*(s') - V_{\pi}(s')]
+            \end{aligned}
+        \end{equation}
+        By recursing on this equation and using linearity of expectation we get $V_\pi(s)\geq V^*(s) -\frac{2\varepsilon}{1-\gamma}$.
+        \item \begin{equation*}
+            \begin{aligned}
+                Q^*(s_1,go) &= \frac{2\varepsilon}{1-\gamma}\\
+                Q^*(s_1,stay) &= \frac{2\varepsilon \gamma}{1-\gamma} \\
+                V^*(s_1) &= \frac{2\varepsilon}{1-\gamma} \\
+                V^*(s_2) &= \frac{2\varepsilon \gamma}{1-\gamma}
+            \end{aligned}
+        \end{equation*}
+        \item As observed the difference between two state-value function is $2\varepsilon$, so one can simply
+        build a state-action value function $\tilde{Q}$ that makes $\pi(s_1)=stay$ the optimal action at $s_1$. \\
+    Let 
+    $$\begin{aligned}
+        \tilde{Q}(s_1,go) =& Q^*(s_1,go) - \varepsilon\\
+        \tilde{Q}(s_1,stay) =& Q^*(s_1,stay) + \varepsilon\\
+        V_\pi(s_1) - V^*(s_1) =& \frac{-2\varepsilon}{1-\gamma}
+    \end{aligned}$$So the bound is tight. 
+    \end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}[4]
+    \textbf{Solution}
+    \begin{enumerate}[(a)]
+        \item \begin{equation}
+            \begin{aligned}
+                v(s)&=\E[G_t|S_t=s]\\
+                &=\E[R_{t+1}+\gamma R_{t+2}+...|S_t=s]\\
+                &=\E[R_{t+1}+\gamma(R_{t+2}+\gamma R_{t+3}+...)|S_t=s]\\
+                &=\E[R_{t+1}+\gamma G_{t+1}|S_t=s]\\
+                &=\E[R_{t+1}+\gamma v(S_{t+1})|S_t=s]
+            \end{aligned}
+        \end{equation}
+        Then we show $\E[R_{t+1}+\gamma G_{t+1}|S_t=s]=\E[R_{t+1}+\gamma v(S_{t+1})|S_t=s]$.\\
+        By the definition of $v(s)$, $$v(s) = \E[G_t|S_t=s],v(S_t) = \E[G_t|S_t],v(S_{t+1}) = \E[G_{t+1}|S_{t+1}]$$
+        By Adam's Law, we have $$\E[\E[Y|X]]=\E[Y].$$
+        Adam's Law with extra conditioning, $$\hat{\E}(\cdot) = \E(\cdot | Z).$$
+        $$\hat{\E}[\hat{\E}(Y|X)] = \hat{\E}(Y)$$
+        $$\E[\E(Y|X,Z)|Z] = \E[Y|Z]$$
+        \begin{equation}
+            \begin{aligned}
+                \E[\E(G_{t+1}|S_{t+1},S_t)|S_t]&=\E[E[G_{t+1}|S_{t+1}]|S_t]\quad \text{By Markov property}
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                \E[\E(G_{t+1}|S_{t+1},S_t)|S_t]&=\E[G_{t+1}|S_t]\\
+                &=\E[v(S_{t+1}|S_t)]\quad \text{By Adam's Law}
+            \end{aligned}
+        \end{equation}
+        thus \begin{equation}
+            \E[G_{t+1}|S_t] = \E[v(S_{t+1})|S_t]\\
+            \E[G_{t+1}|S_t=s] = \E[v(S_{t+1})|S_t=s]
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                v(s) &= \E[G_t|S_t=s] = \E[R_{t+1}+\gamma G_{t+1}|S_t=s] = \E[R_{t+1}|S_t=s]+\gamma\E[G_{t+1}|S_t=s]\\
+               & =\E[R_{t+1}|S_t=s]+\gamma \E[v(S_{t+1})|S_t=s]\\
+                &=E[R_{t+1}+\gamma v(S_{t+1})|S_t=s]
+            \end{aligned}
+        \end{equation}
+        \item $$v_{\pi}(s) = \E[R_{t+1}+\gamma v_{\pi}(S_{t+1})|S_t=s]$$
+        Equivalently, $$v_{\pi}(S_t) = \E[R_{t+1}+\gamma v_{\pi}(S_{t+1})|S_t]$$
+        \begin{equation}
+            \begin{aligned}
+                v_{\pi}(s)&=\E[G_t|S_t=s]\\
+                &=\E[R_{t+1}+\gamma R_{t+2}+...|S_t=s]\\
+                &=\E[R_{t+1}+\gamma(R_{t+2}+\gamma R_{t+3}+...)|S_t=s]\\
+                &=\E[R_{t+1}+\gamma G_{t+1}|S_t=s]\\
+                &=\E[R_{t+1}+\gamma v_{\pi}(S_{t+1})|S_t=s]
+            \end{aligned}
+        \end{equation}
+        Then we show $\E[R_{t+1}+\gamma G_{t+1}|S_t=s]=\E[R_{t+1}+\gamma v_{\pi}(S_{t+1})|S_t=s]$.\\
+        By the definition of $v_{\pi}(s)$, $$v_{\pi}(s) = \E[G_t|S_t=s],v_{\pi}(S_t) = \E[G_t|S_t],v_{\pi}(S_{t+1}) = \E[G_{t+1}|S_{t+1}]$$
+        By Adam's Law, we have $$\E[\E[Y|X]]=\E[Y].$$
+        Adam's Law with extra conditioning, $$\hat{\E}(\cdot) = \E(\cdot | Z).$$
+        $$\hat{\E}[\hat{\E}(Y|X)] = \hat{\E}(Y)$$
+        $$\E[\E(Y|X,Z)|Z] = \E[Y|Z]$$
+        \begin{equation}
+            \begin{aligned}
+                \E[\E(G_{t+1}|S_{t+1},S_t)|S_t]&=\E[E[G_{t+1}|S_{t+1}]|S_t]\quad \text{By Markov property}
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                \E[\E(G_{t+1}|S_{t+1},S_t)|S_t]&=\E[G_{t+1}|S_t]\\
+                &=\E[v_{\pi}(S_{t+1}|S_t)]\quad \text{By Adam's Law}
+            \end{aligned}
+        \end{equation}
+        thus \begin{equation}
+            \E[G_{t+1}|S_t] = \E[v_{\pi}(S_{t+1})|S_t]\\
+            \E[G_{t+1}|S_t=s] = \E[v_{\pi}(S_{t+1})|S_t=s]
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                v_{\pi}(s) &= \E[G_t|S_t=s] = \E[R_{t+1}+\gamma G_{t+1}|S_t=s] = \E[R_{t+1}|S_t=s]+\gamma\E[G_{t+1}|S_t=s]\\
+               & =\E[R_{t+1}|S_t=s]+\gamma \E[v_{\pi}(S_{t+1})|S_t=s]\\
+                &=E[R_{t+1}+\gamma v_{\pi}(S_{t+1})|S_t=s]
+            \end{aligned}
+        \end{equation}
+        $$q_{\pi}(s,a) = \E_{\pi}[R_{t+1}+\gamma q_{\pi}(S_{t+1},A_{t+1})|S_t=s,A_t=a]$$
+        
+        \begin{equation}
+            \begin{aligned}
+                q_{\pi}(s,a) = \E_\pi[G_t|S_t=s,A_t=a]\\
+                q_\pi(S_t,A_t) = \E_\pi[G_t|S_t,A_t]\\
+                q_\pi(S_{t+1},A_{t+1}) = \E_\pi[G_{t+1}|S_t,A_{t+1}]
+            \end{aligned}
+        \end{equation}
+        By Adam's Law, we have $$\E[\E[Y|X]]=\E[Y].$$
+        Adam's Law with extra conditioning, $$\hat{\E}(\cdot) = \E(\cdot | Z).$$
+        $$\hat{\E}[\hat{\E}(Y|X)] = \hat{\E}(Y)$$
+        $$\E[\E(Y|X,Z)|Z] = \E[Y|Z]$$
+        Let $Y = G_{t+1}$,$Z=(S_t,A_t),X=(S_{t+1},A_{t+1})$
+        then we have
+        \begin{equation}
+            \begin{aligned}
+                \E[\E(G_{t+1}|S_{t+1},S_t,A_{t+1},A_t)|S_t,A_t]&=\E[E[G_{t+1}|S_{t+1},A_{t+1}]|S_t,A_t]\quad \text{By Markov property}\\
+                &=\E[q_\pi(S_{t+1},A_{t+1})|S_t,A_t]
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                \E[\E(G_{t+1}|S_{t+1},S_t,A_{t+1},A_t)|S_t,A_t]&=\E[G_{t+1}|S_t,A_t]\\
+                &=\E[q_{\pi}(S_{t+1},A_{t+1})|S_t,A_t]\quad \text{By Adam's Law}
+            \end{aligned}
+        \end{equation}
+        thus \begin{equation}
+            \E_\pi[G_{t+1}|S_t=s,A_t = a] = \E_\pi[q_{\pi}(S_{t+1},A_{t+1})|S_t=s,A_t=a]
+        \end{equation}
+        Then we have 
+        \begin{equation}
+            \begin{aligned}
+                q_{\pi}(s,a) &= \E_\pi[G_t|S_t=s,A_t=a] = \E_\pi[R_{t+1}+\gamma G_{t+1}|S_t=s,A_t=a] \\
+                &= \E_\pi[R_{t+1}|S_t=s,A_t=a]+\gamma\E_\pi[G_{t+1}|S_t=s,A_t=a]\\
+               & =\E_\pi[R_{t+1}|S_t=s,A_t=a]+\gamma \E_\pi[q_{\pi}(S_{t+1},A_{t+1})|S_t=s,A_t=a]\\
+                &=\E_\pi[R_{t+1}+\gamma q_{\pi}(S_{t+1},A_{t+1})|S_t=s,A_t=a]
+            \end{aligned}
+        \end{equation}
+        $$ v_\pi(s) = \sum_{a\in\mathcal{A}}\pi(a|s)q_\pi(s,a)$$
+        \textbf{Proof}\\
+        \begin{equation}
+            \begin{aligned}
+                v_\pi(s) = \E_\pi[G_t|S_t=s] &=\sum_{a\in\mathcal{A}}\E_\pi[G_t|S_t=s,A_t=a]P(A_t=a|S_t=s)\quad (\text{LOTE})\\
+                &=\sum_{a\in\mathcal{A}}q_\pi(s,a)\pi(a|s)
+            \end{aligned}
+        \end{equation}
+        End proof
+        $$ q_\pi(s,a) = R^a_s+\gamma \sum_{s'\in\mathcal{S}}P^a_{ss'}v_\pi(s')$$
+        \begin{equation}
+            \begin{aligned}
+                \E[q_\pi(S_{t+1},A_{t+1})|S_{t+1}=s',S_t=s,A_t=a] &=\E[q_\pi(S_{t+1},A_{t+1})|S_{t+1}]\quad (\text{By Markov property})\\
+                &=\sum_{a\in\mathcal{A}}\E[q_\pi(S_{t+1},A_{t+1})|S_{t+1}=s',A_{t+1}=a]P(A_{t+1}=a|S_{t+1}=s')\\
+                &=\sum_{a\in\mathcal{A}} q_{\pi}(s',a)\pi(a|s')\\
+                &=v_\pi(s')
+            \end{aligned}
+        \end{equation}
+        Then we have
+        \begin{equation}
+            \begin{aligned}
+                \E[q_\pi(S_{t+1},A_{t+1})|S_t=s,A_t=a] &= \sum_{s'\in \mathcal{S}}\E[q_\pi(S_{t+1},A_{t+1})|S_{t+1}=s',S_t=s,A_{t}=a]P(S_{t+1}=s'|S_t=s,A_t=a)\quad(\text{LOTE})\\
+                &=\sum_{s'\in \mathcal{S}} v_\pi(s')P^a_{ss'}
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                q_{\pi}(s,a)&=\E_{\pi}[R_{t+1}+\gamma q_\pi(S_{t+1},A_{t+1})|S_t=s,A_t=a]\\
+                &=\E_{\pi}[R_{t+1}]+ \gamma \E_\pi[q_\pi(S_{t+1},A_{t+1})|S_t=s,A_t=a]\\
+                &= R_s^a + \gamma \sum_{s'\in\mathcal{S}}P^a_{ss'}v_\pi(s')
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                v_\pi(s) &= \sum_{a\in\mathcal{A}}\pi(a|s)q_\pi(s,a)\\
+                &=\sum_{a\in\mathcal{A}}\pi(a|s)(R_s^a + \gamma\sum_{s'\in \mathcal{S}}P_{ss'}^a v_\pi(s'))
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                q_\pi(s,a) &= R_s^a + \gamma\sum_{s'\in S}P_{ss'}^a v_\pi(s')\\
+                &=R_s^a + \gamma\sum_{s'\in S}P_{ss'}^a (\sum_{a'\in \mathcal{A}}\pi(a'|s')q_\pi(s',a'))
+            \end{aligned}
+        \end{equation}
+
+        \item $$v_*(s) = \max_a q_*(s,a)$$
+        In part (b), we have $q_\pi (s,a) = R^a_s + \gamma \sum_{s'\in \mathcal{S}}P^a_{ss'}v_\pi(s')$.
+        \begin{equation}
+            \begin{aligned}
+                q_*(s,a) &=\max_\pi q_\pi(s,a) = R^a_s + \gamma \sum_{s'\in \mathcal{S}}P_{ss'}^a \max_\pi v_\pi(s')\\
+                &=  R^a_s + \gamma \sum_{s'\in \mathcal{S}}P_{ss'}^a v_*(s')
+            \end{aligned}
+        \end{equation}
+        $$\E[R_{t+1}|S_t=s,A_t=a] = R_s^a$$
+        \begin{equation}
+            \begin{aligned}
+                \E[v_*(S_{t+1})|S_t=s,A_t=a] &= \sum_{s'\in \mathcal{S}} \E[v_*(S_{t+1})|S_{t+1}=s',S_t=s,A_t=a]P(S_{t+1}=s'|S_t=s,A_t=a)\\
+                &=\sum_{s'\in \mathcal{S}} v_*(s')P_{ss'}^a
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                q_*(s,a) = \E[R_{t+1} + \gamma v_*(S_{t+1}) | S_t=s,A_t=a]
+            \end{aligned}
+        \end{equation}
+
+        \begin{equation}
+            \begin{aligned}
+                v_*(s) &= \max_a q_*(s,a)\\
+                &=\max_a \E[R_{t+1} + \gamma v_*(S_{t+1})|S_t=s,A_t=a]
+            \end{aligned}
+        \end{equation}
+        Then we also have 
+        $$ v_*(s) =\max_a (R^a_s + \gamma \sum_{s'\in \mathcal{S}} P^a_{ss'}v_*(s'))$$
+        \begin{equation}
+            \begin{aligned}
+                q_*(s,a) &= R_s^a + \gamma\sum_{s'\in \mathcal{S}} P_{ss'}^a v_*(s')\\
+                &= R_s^a + \gamma\sum_{s'\in \mathcal{S}} P_{ss'}^a \max_{a'}q_*(s',a')
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                \E[\max_{a'} q_*(S_{t+1},a')|S_t=s,A_t=a] &= \sum_{s'\in \mathcal{S}} \E[\max_{a'}q_*(S_{t+1},a')|S_{t+1},S_t=s,A_t=a]P(s_{t+1}=s'|S_t=s,A_t=a)\quad (\text{LOTE})\\
+                &=\sum_{s'\in \mathcal{S}} \max_{a'} q_*(s',a')P^a_{ss'}
+            \end{aligned}
+        \end{equation}
+        Then 
+        $$q_*(s,a) = \E[R_{t+1} + \gamma \max_{a'} q_*(S_{t+1},a')|S_t=s,A_t=a]$$
+        
+        
+        
+
+
+
+
+
+
+
+
+        
+        
+
+    \end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}[5]
+    \textbf{Solution}
+    \begin{enumerate}[(a)]
+        \item $$v(s) = R_s + \gamma \sum_{s'\in \mathcal{S}} P_{ss'}v(s')$$
+        The $\gamma = 1$, then 
+        \begin{equation}
+            \begin{aligned}
+                v(pass) &= R_{pass} + \gamma \sum_{s'\in \mathcal{S}} P_{pass ,s'}v(s') = 10 + 1\cdot 0 = 10\\
+                v(c_3) &= R_{c_3} + \gamma \sum_{s'\in \mathcal{S}} P_{c_3 s'}v(s')=-2+0.4\cdot 0.8 + 0.6\cdot 10 = 4.32  \\
+                v(c_2) &= R_{c_2} + \gamma \sum_{s'\in \mathcal{S}} P_{c_2 s'}v(s') = -2 + 0.2\cdot 0 + 0.8\cdot 4.32 = 1.456\\
+                v(c_1) &= R_{c_1} + \gamma \sum_{s'\in \mathcal{S}} P_{c_1 s'}v(s') = -2 + 0.5\cdot -22.543 + 0.5\cdot 1.456 = -12.543\\
+                v(pub) &= R_{pub} + \gamma \sum_{s'\in \mathcal{S}} P_{pub, s'}v(s') = 1 + 0.2\cdot -12.543 + 0.4\cdot 1.456+0.4\cdot 4.32=0.802\\
+                v(facebook) &= R_{facebook} + \gamma \sum_{s'\in \mathcal{S}} P_{facebook, s'}v(s') = -1+0.9\cdot v(facebook)+0.1\cdot -12.543=-22.543\\
+                v(sleep) &= 0 + \gamma 0=0
+            \end{aligned}
+        \end{equation}
+        We can solve the Bellman equation, then we obtain results, iterative method or solve directly.
+    $$\begin{aligned}v &= R+\gamma P v\\
+    v &= (I-\gamma P)^{-1}R\end{aligned}$$
+        \item Let policy $\pi$ is uniform random and discount factor $\gamma=1$.\\
+        $$v_\pi(s) = \sum_{a\in \mathcal{A}}\pi(a|s)[R^a_s+\gamma\sum_{s'\in\mathcal{S}}P_{ss'}^a v_\pi(s')]$$
+        \begin{equation}
+            \begin{aligned}
+                v_1 = v_\pi(s_1) &= \pi(study|s_1)(R_{s_1}^{study} +1\cdot 1\cdot v_\pi(s_2)) + \pi(fb|s_1)(R_{s_1}^{fb} +1\cdot 1\cdot v_\pi(s_4))\\
+                    &=0.5(-2+v_2)+0.5(-1+v_4)
+            \end{aligned}
+        \end{equation}
+           \begin{equation}
+            \begin{aligned}
+                v_2 &= v_\pi(s_2) = 0.5(-2+v_3) + 0.5(0+0)\\
+                v_3 &= v_\pi(s_3) = 0.5(1+0.2v_1+0.4v_2+0.4v_3) + 0.5(10+0)\\
+                v_4 &= v_\pi(s_4) = 0.5(0+v_1) + 0.5(-1+v_4)\\
+            \end{aligned}
+        \end{equation}
+        So we have $$v_1 = -1.3,v_2=2.7,v_3=7.4,v_4=-2.3.$$
+        $$q_{\pi}(s,a) = R_s^a + \gamma \sum_{s'\in\mathcal{S}}P^a_{ss'}v_\pi(s')$$
+        \begin{equation}
+            \begin{aligned}
+                q_{\pi}(s_1,study) &= -2+1\cdot v_2 =0.7\\
+                q_{\pi}(s_1,fb) &= -1+1\cdot v_4 =-3.3\\
+                q_{\pi}(s_2,sleep) &= 0+0 =0\\
+                q_{\pi}(s_2,study) &= -2+1\cdot v_3 =5.4\\
+                q_{\pi}(s_3,study) &= 10+0 =10\\
+                q_{\pi}(s_3,pub) &= 1+0.2v_1+0.4v_2+0.4v_3 =4.78\\
+                q_{\pi}(s_4,fb) &= -1+1\cdot v_4 =-3.3\\
+                q_{\pi}(s_4,quit) &= 0+1\cdot v_1 =-1.3
+            \end{aligned}
+        \end{equation}
+        \item We obtain $q_*(s,a)$ first, then obtain $v_*(s)$.
+        $$q_\pi(s,a) = R_s^a + +\gamma\sum_{s'\in\mathcal{S}}P_{ss'}^a v_\pi(s')$$
+        $$q_*(s,a) = \max_{\pi} q_\pi(s,a)$$
+        Since $v_\pi(sleep) = 0,\forall \pi$, then we have $$q_\pi(s_2,sleep) = R_{s_2}^{sleep} + 1\cdot v_\pi(sleep)=0+0,\forall \pi.$$
+        Then $q_*(s_2,sleep) = 0.$
+        \begin{equation}
+            \begin{aligned}
+                q_\pi(s_3,study) = R_{s_3}^{sleep} + 1\cdot v_\pi(sleep)=10+0=10,\forall \pi
+            \end{aligned}
+        \end{equation}
+        Then $q_*(s_3,study) = 10.$
+        We also have $$q_*(s,a) = R_s^a + +\gamma\sum_{s'\in\mathcal{S}}P_{ss'}^a v_*(s')=R_s^a + +\gamma\sum_{s'\in\mathcal{S}}P_{ss'}^a \max_{a'}q_*(s',a').$$
+        \begin{equation}
+            \begin{aligned}
+                q_*(s_1,study) &= R_{s_1}^{study} + \gamma P_{s_1s_2}^{study}\max_{a'}q_*(s_2,a')\\
+                    &=R_{s_1}^{study} + \gamma P_{s_1s_2}^{study}\max\{ q_*(s_2,sleep),q_*(s_2,study)\}\\
+                    &=-2+\max\{ 0,q_*(s_2,study)\}
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                q_*(s_1,facebook) &= R_{s_1}^{facebook} + \gamma P_{s_1s_4}^{facebook}\max_{a'}q_*(s_4,a')\\
+                    &=R_{s_1}^{facebook} + \gamma P_{s_1s_4}^{facebook}\max\{ q_*(s_4,quit),q_*(s_4,facebook)\}\\
+                    &=-1+\max\{ q_*(s_4,quit),q_*(s_4,facebook)\}
+            \end{aligned}
+        \end{equation}
+        $$
+        \begin{aligned}
+            q_*(s_2,sleep) &= 0\\
+            q_*(s_2,study) &= -2+\max\{ 10,q_*(s_3,pub)\}
+            q_*(s_3,study) &= 10
+        \end{aligned}
+        $$
+        \begin{equation}
+            \begin{aligned}
+                q_*(s_3,pub) = 1 + 0.2\max\{ q_*(s_1,study),q_*(s_1,facebook)\} + 0.4\max\{ q_*(s_2,study),0\} +0.4\max\{ q_*(s_3,pub),10\}
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                q_*(s_4,facebook) = -1 + \max\{ q_*(s_4,facebook),q_*(s_4,quit)\} %+ 0.4\max\{ q_*(s_2,study),0\} +0.4\max\{ q_*(s_3,pub),10\}
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                q_*(s_4,quit) = 0 + \max\{ q_*(s_1,facebook),q_*(s_1,study)\} %+ 0.4\max\{ q_*(s_2,study),0\} +0.4\max\{ q_*(s_3,pub),10\}
+            \end{aligned}
+        \end{equation}
+        \begin{equation}
+            \begin{aligned}
+                q_*(s_2,study) &= -2 + \max\{10,q_*(s_3,pub)\}\\
+                q_*(s_1,study) &= -2 + \max\{0,q_*(s_2,study)\}=-2 + q_*(s_2,study)\\
+                q_*(s_4,facebook) &= -1 + \max\{q_*(s_4,facebook),q_*(s_4,quit)\} = -1 + q_*(s_4,quit) \\
+                q_*(s_1,facebook) &= -1 + \max\{q_*(s_4,facebook),q_*(s_4,quit)\} = -1 + q_*(s_4,quit) \\
+                q_*(s_4,quit) &= \max\{q_*(s_1,study),q_*(s_1,facebook)\} = \max\{ q_*(s_1,study),-1 + q_*(s_4,quit)\} = q_*(s_1,study)\\
+                q_*(s_3,pub) &= 1 + 0.2\max\{q_*(s_1,study),q_*(s_1,facebook)\} + 0.4\max\{q_*(s_2,study),0\} + 0.4\max\{q_*(s_3,pub),10\} \\
+                &= 0.6 +  0.6q_*(s_2,study)+0.4\max\{q_*(s_3,pub),10\}
+            \end{aligned}
+        \end{equation}
+        If $\max\{q_*(s_3,pub),10\} = q_*(s_3,pub)$, then $q_*(s_3,pub)\geq 10$.
+        $$\begin{aligned}
+            q_*(s_3,pub) &= 0.6 + 0.6q_*(s_2,study) + 0.4q_*(s_3,pub)\\
+            q_*(s_3,pub) &= 1 + q_*(s_2,study)
+        \end{aligned}
+        $$
+        $$
+        \begin{aligned}
+            q_*(s_2,study) = -2 + \max\{ 10,q_*(s_3,pub)\} = -2 + q_*(s_3,pub)
+        \end{aligned}$$
+        Then $$ q_*(s_3,pub) =1-2 + q_*(s_3,pub)$$, which means $q_*(s_3,pub)< 10$.
+        Then $q_*(s_3,pub) = 0.6+0.6q_*(s_2,study)+4 = 4.6+0.6q_*(s_2,study)$.
+        $$q_*(s_2,study) = -2+\max\{10,q_*(s_3,pub)\} = -2+10=8$$
+        Then we have       
+        \begin{equation}
+                \begin{aligned}
+                    q_*(s_1,study)&=-2+q_*(s_2,study) = -2+8=6\\
+                    q_*(s_3,pub)&=4.6+0.6q_*(s_2,study) =4.6+0.6*8=9.4\\
+                    q_*(s_4,quit)&=q_*(s_1,study)=6\\
+                    q_*(s_4,facebook)&=-1+q_*(s_4,quit)=-1+6=5\\
+                    q_*(s_1,facebook)&=-1+q_*(s_4,quit)=-1+6=5
+                \end{aligned}
+            \end{equation}
+            Since $$v_*(s) = \max_{a}q_*(s,a)$$
+        \begin{equation}
+            \begin{aligned}
+                v_*(s_1)&= \max_a q_*(s_1,a) = \max\{ q_*(s_1,study),q_*(s_1,facebook)\} = \max\{6,5\}=6\\
+                v_*(s_2)&= \max_a q_*(s_2,a) = \max\{ q_*(s_2,study),q_*(s_2,sleep)\} = \max\{8,0\}=8\\
+                v_*(s_3)&= \max_a q_*(s_3,a) = \max\{ q_*(s_3,study),q_*(s_3,pub)\} = \max\{10,9.4\}=10\\
+                v_*(s_4)&= \max_a q_*(s_4,a) = \max\{ q_*(s_4,quit),q_*(s_4,facebook)\} = \max\{6,5\}=6\\
+                v_*(sleep)&= 0
+            \end{aligned}
+        \end{equation}
+    \end{enumerate}
+        % \begin{equation}
+        %     \begin{aligned}
+        %     \end{aligned}
+        % \end{equation}
+        
+        % \begin{equation}
+        %     \begin{aligned}
+        %     \end{aligned}
+        % \end{equation}
+        % $$
+        % \begin{aligned}
+        %     aa
+        % \end{aligned}
+        % $$
+        % \begin{equation}
+        %     \begin{aligned}
+        %         v(s) &= \E_\pi[G_t|S_t=s] = \E_\pi[R_{t+1}+\gamma G_{t+1}|S_t=s] = \E_\pi[R_{t+1}|S_t=s]+\gamma\E_\pi[G_{t+1}|S_t=s]
+        %     \end{aligned}
+        % \end{equation}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}[6]
+    \textbf{Solution}
+    \begin{enumerate}[(a)]
+        \item  $$v_\pi(s) = \sum_{a\in \mathcal{A}}\pi(a|s)[R^a_s+\gamma\sum_{s'\in\mathcal{S}}P_{ss'}^a v_\pi(s')]$$
+        By description in Reinforcement Learning:introduction, $\gamma=0.9$. 
+        For example, the value function in first row is  
+        \begin{equation}
+            \begin{aligned}
+                3.3 &= 1/4(-1+0.9*1*3.3) + 1/4(0+0.9*1*8.8) + 1/4(0+0.9*1*1.5) + 1/4(-1+0.9*1*3.3)\\
+                8.8 &= 1* (10 +0.9* 1*-1.3)\\ %1/4(-1+0.9*1*8.8) + 1/4(0+0.9*1*4.4) + 1/4(0+0.9*1*3.0) + 1/4(0+0.9*1*3.3)
+                4.4 &= 1/4(-1+0.9*1*4.4) + 1/4(0+0.9*1*5.3) + 1/4(0+0.9*1*2.3) + 1/4(0+0.9*1*8.8)\\
+                5.3 &= 1*(5+0.9*1*0.4)\\%1/4(-1+0.9*1*5.3) + 1/4(0+0.9*1*1.5) + 1/4(0+0.9*1*1.9) + 1/4(0+0.9*1*4.4)
+                1.5 &= 1/4(-1+0.9*1*1.5) + 1/4(-1+0.9*1*1.5) + 1/4(0+0.9*1*0.5) + 1/4(0+0.9*1*5.3)
+                % 3.3 &= 1/4(-1+0.9*1*3.3) + 1/4(0+0.9*1*8.8) + 1/4(0+0.9*1*1.5) + 1/4(-1+0.9*1*3.3)
+                % 3.3 &= 1/4(-1+0.9*1*3.3) + 1/4(0+0.9*1*8.8) + 1/4(0+0.9*1*1.5) + 1/4(-1+0.9*1*3.3)
+                % 3.3 &= 1/4(-1+0.9*1*3.3) + 1/4(0+0.9*1*8.8) + 1/4(0+0.9*1*1.5) + 1/4(-1+0.9*1*3.3)
+                % 3.3 &= 1/4(-1+0.9*1*3.3) + 1/4(0+0.9*1*8.8) + 1/4(0+0.9*1*1.5) + 1/4(-1+0.9*1*3.3)
+                % 3.3 &= 1/4(-1+0.9*1*3.3) + 1/4(0+0.9*1*8.8) + 1/4(0+0.9*1*1.5) + 1/4(-1+0.9*1*3.3)
+                % 3.3 &= 1/4(-1+0.9*1*3.3) + 1/4(0+0.9*1*8.8) + 1/4(0+0.9*1*1.5) + 1/4(-1+0.9*1*3.3)
+                % 3.3 &= 1/4(-1+0.9*1*3.3) + 1/4(0+0.9*1*8.8) + 1/4(0+0.9*1*1.5) + 1/4(-1+0.9*1*3.3)
+            \end{aligned}
+        \end{equation}
+        We can solve the Bellman Expectation equation.
+        $$v_\pi = R^\pi - \gamma P^\pi v_\pi$$
+        $$v_\pi = (I-\gamma P^\pi)^{-1}R^\pi$$
+        
+
+        \item $$q_*(s,a) = R_s^a + +\gamma\sum_{s'\in\mathcal{S}}P_{ss'}^a v_*(s')=R_s^a + +\gamma\sum_{s'\in\mathcal{S}}P_{ss'}^a \max_{a'}q_*(s',a')$$
+        $$ v_*(s) =\max_a (R^a_s + \gamma \sum_{s'\in \mathcal{S}} P^a_{ss'}v_*(s'))$$
+        Let location (i,j) in gridworld is state $s_{(i-1)*5+j}$, then we should have 25 states.\\
+        \begin{equation}
+            \begin{aligned}
+                v_*(s_1) &= \max_a (R^a_{s_1} + \gamma \sum_{s'\in \mathcal{S}} P^a_{s_1 s'}v_*(s'))\\
+                &=\max\{ -1+0.9*v_*(s_1),0+0.9*v_*(s_2),0+0.9*v_*(s_6),-1+0.9*v_*(s_1) \}\\
+                v_*(s_2) &=\max\{ 10+0.9*v_*(s_{22}),10+0.9*v_*(s_{22}),10+0.9*v_*(s_{22}),10+0.9*v_*(s_{22}) \} \\
+                v_*(s_3) &=\max\{ -1+0.9*v_*(s_{3}),0+0.9*v_*(s_{4}),0+0.9*v_*(s_{8}),0+0.9*v_*(s_{2}) \}\\
+                \vdots& \\
+                v_*(s_t) &=\max\{ 0.9*v_*(s_{t-5}),0.9*v_*(s_{t+1}),0.9*v_*(s_{t+5}),0.9*v_*(s_{t-1}) \}\\
+                \vdots& \\
+                v_*(s_{25}) &=\max\{ 0.9*v_*(s_{20}),-1+0.9*v_*(s_{25}),-1 +0.9*v_*(s_{25}),0.9*v_*(s_{24}) \}
+            \end{aligned}
+        \end{equation}
+        For example, 
+        \begin{equation}
+            \begin{aligned}
+                v_*(s_1) &=\max\{ -1+0.9*v_*(s_1),0+0.9*v_*(s_2),0+0.9*v_*(s_6),-1+0.9*v_*(s_1) \} \\
+                &= \max\{-1+0.9*22,0.9*24.4,0.9*19.8,-1+0.9*22 \}=22
+            \end{aligned}
+        \end{equation}
+        And we also have          
+        \begin{equation}
+                \begin{aligned}
+                    q_*(s_1,up) &= R^{left}_{s_1} + \gamma \sum_{s'\in \mathcal{S}} P^{left}_{s_1 s'}v_*(s') = -1 + 0.9*v_*(s_1)\\
+                    q_*(s_1,right) &= R^{right}_{s_1} + \gamma \sum_{s'\in \mathcal{S}} P^{right}_{s_1 s'}v_*(s') = 0.9*v_*(s_2)\\
+                    q_*(s_1,down) &= R^{down}_{s_1} + \gamma \sum_{s'\in \mathcal{S}} P^{down}_{s_1 s'}v_*(s') = 0.9*v_*(s_6) \\
+                    q_*(s_1,left) &= R^{left}_{s_1} + \gamma \sum_{s'\in \mathcal{S}} P^{left}_{s_1 s'}v_*(s') = -1 + 0.9*v_*(s_1)
+                \end{aligned}
+            \end{equation}
+        Then 
+        \begin{equation}
+            \begin{aligned}
+                q_*(s_1,up) = -1 + 0.9*v_*(s_1)=18.8\\
+                q_*(s_1,right) = 0.9*v_*(s_2) = 22\\
+                q_*(s_1,down) =0.9*v_*(s_6)=17.82 \\
+                q_*(s_1,left)=-1 + 0.9*v_*(s_1)=18.8\\
+            \end{aligned}
+        \end{equation}
+        Since $$a^* = \arg\max_{a'} q_*(s,a')$$, then $a^*$ in $s_1$ is $\arg\max_{a'} \{ 18.8,22,17.82,18.8\}=right$.
+        optimal policy is $$\pi(a|s_1) = \begin{cases}
+            1 \quad \text{if } a = right\\
+            0 \quad \text{otherwise} 
+        \end{cases}$$.
+        I find that if I want to obtain $v_*(s)$, I have to get $q_*(s,a)$, i.e. I have to solve optimal Bellman equation recursively. \\
+        To obtain optimal value function, we can use iterative solution methods, such as Value Iteration, Policy Iteration, Q-learning and Sarsa.
+        % \begin{equation}
+        %     \begin{aligned}
+        %     \end{aligned}
+        % \end{equation}
+
+        
+
+    \end{enumerate}
+            % \begin{equation}
+        %     \begin{aligned}
+        %     \end{aligned}
+        % \end{equation}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}[7]
+    \textbf{Solution}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}[8]
+    \textbf{Solution}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}[9]
+    \textbf{Solution}
+\end{homeworkProblem}
+
+% Continue counting to 6
+% \begin{homeworkProblem}[3]
+    % Harvard Textbook BH (the first edition): Chapter 11, Problem 6 \\
+    % \textbf{Solution}
+    % \begin{enumerate}[(a)]
+    %     \item Using result of Problem 1 (a), 
+        % \begin{equation}
+        %     \begin{aligned}
+        %         \E(N_{\left\{ X_i=0 \right\}}) &= P(X_0=0)+\sum_{i=1}^9 P(X_i=0) \\
+        %         &= s_0 + \sum_{i=1}^24 \left( s_0, s_2,...,s_{M-1} \right)Q^{i-1}(q_{00},q_{10},\ldots,q_{(M-1) 3})^T \\
+        %         &= s_0 + (\sum_{i=1}^{24} \left( s_0, s_1,...,s_{M-1} \right)Q^{i-1}) (q_{00},q_{10},\ldots,q_{(M-1) 0})^T \\
+        %         &=25s_0
+        %     \end{aligned}
+        % \end{equation}
+    %     \item $W_0,W_1\ldots$is a Markov chain, markov property is holded by the chain. Let $A_n$
+    %     be the event $X_0 = x_0, \dots ,X_n = x_n$, $B_n$ be the event $Y_0 = y_0,\ldots , Y_n = y_n$, $C_n$ be
+    %     the event $Z_0 = z_0,\ldots ,Z_n = z_n$, and $D_n = A_n \cap B_n \cap C_n$. Then
+    %     \begin{equation}
+    %         \begin{aligned}
+    %             &P(W_{n+1}=w_{n+1} | W_{n}=w_{n},W_{n-1}=w_{n-1},\ldots,W_{0}=w_{0}) \\
+    %             &=P(X_{n+1}=x_{n+1},Y_{n+1}=y_{n+1},Z_{n+1}=z_{n+1} | W_{n}=w_{n},W_{n-1}=w_{n-1},\ldots,W_{0}=w_{0}) \\
+    %             &=P(X_{n+1}=x_{n+1},Y_{n+1}=y_{n+1},Z_{n+1}=z_{n+1} | D_n) \\
+    %             &=P(X_{n+1}=x_{n+1}|D_n)P(Y_{n+1}=y_{n+1}| D_n)P(Z_{n+1}=z_{n+1}|D_n) \quad (Since\; X_n,Y_n\; and\; Z_n\; are\; independent\; Markov\; chains)\\
+    %             &=P(X_{n+1}=x_{n+1}|A_n)P(Y_{n+1}=y_{n+1}| B_n)P(Z_{n+1}=z_{n+1}|C_n) \\
+    %             &=P(X_{n+1}=x_{n+1}|X_n=x_n)P(Y_{n+1}=y_{n+1}| Y_n=y_n)P(Z_{n+1}=z_{n+1}|Z_n=z_n) \\
+    %             &=P(W_{n+1}=w_{n+1}|W_{n}=w_{n})
+    %         \end{aligned}
+    %     \end{equation}
+    %     % P(Xn+1 = x; Yn+1 = y;Zn+1 = zjDn)
+    %     % = P(Xn+1 = xjDn)P(Yn+1 = yjXn+1 = x;Dn)P(Zn+1 = zjXn+1 = x; Yn+1 = y;Dn)
+    %     % = P(Xn+1 = xjAn)P(Yn+1 = yjBn)P(Zn+1 = zjCn)
+    %     % = P(Xn+1 = xjXn = xn)P(Yn+1 = yjYn = yn)P(Zn+1 = zjZn = zn):
+    %     \item 
+    %     \textbf{Theorem}: For an ergodic Markov chain, the expected first return time $\E_x(T)$ for state $x$ satisfies
+    %     $\E_x(T)=1/s_x$,
+    %     where $s = [s_1, . . . , s_M]$ is the stationary probability vector for $Q$. \\
+    %     To find the expected time it will take for all 3  dragon to be at home again at the same time, we have to find stationary distribution of $W_n$. 
+    %     Since $X_0,X_1,X_2, . . . $, $Y_0, Y_1, Y_2, . . . $ and $Z_0, Z_1, Z_2, . . .$ are independent Markov chains with the same stationary distribution $s$. 
+    %     $$P(W_n=w_n) = P(X_n=x_n,Y_n=y_n,Z_n=z_n) = P(X_n=x_n)P(Y_n=y_n)P(Z_n=z_n)=s_{x_n}s_{y_n}s_{z_n}$$
+    %     Then the stationary distribution of $W_n$ is $s_x s_y s_z$. For $x=y=z=0$, the expected time is $1/s_0^3$.
+
+    %     % \textnormal{Proof}
+
+    % \end{enumerate}
+% \end{homeworkProblem}
+
+% \begin{homeworkProblem}[4]
+%     Harvard Textbook BH (the first edition): Chapter 11, Problem 7 \\
+%     \textbf{Solution}
+%     \begin{enumerate}[(a)]
+%         \item $\vert X_0 \vert, \vert X_1\vert, \vert X_2\vert,\ldots $also a Markov chain. It can be viewed as the chain on
+%         state space $0, 1, 2, 3$. If $\vert X_n \vert$ is not an endpoint ($0$ or $3$), then $\vert X_{n+1} \vert$ is
+%         $\vert Xn \vert  -1$ or $\vert X_n\vert +1$, each with probability 1/2. Otherwise, the chain gets reflected off the
+%         endpoint, i.e., from 3 it always goes to 2 and from 0 it always goes to 1. Given that $\vert X_n \vert = x_n$, we know that
+%         $X_n = x_n\; or\; X_n = -x_n$, and being given information about $X_{n-1},X_{n-2},\ldots $does not affect
+%         the conditional distribution of $\vert X_{n+1}\vert$.
+%         \item $\text{sgn}(X_0), \text{sgn}(X_1), \text{sgn}(X_2), \ldots$ is not a Markov chain. Since $\text{sgn}(X_{n-1}) = 0$ implies $X_{n-1}=0$, then $\text{sgn}(X_{n})$ is $1$ or $-1$. So $X_{n+1}$ is $2$, $-2$, $0$. Therefore, $\text{sgn}(X_{n-1})$ provide information to $X_{n+1}$, the chain does not hold markov property. \\
+%         For instance, $P(\text{sgn}(X_{n+1}) | \text{sgn}(X_{n})=1)>P(\text{sgn}(X_{n+1}) | \text{sgn}(X_n)=1,\text{sgn}(X_{n-1})=0)$, $X_n=1$ implies $X_n=1,2,3$, $X_n=1,X_{n-1}=0$ implies $X_n=1$.
+        
+%         \item To find stationary distribution, we solve the equation $sQ = s$. 
+%         The transition matrix $Q$,         $$\left(
+%             \begin{matrix}
+%                 0 & 1 & 0 &0 & 0 & 0 & 0 \\
+%                 1/2 &0 &1/2 &0&0&0&0 \\
+%                 0 &1/2 &0 &1/2&0&0&0 \\
+%                 0 &0 &1/2 &0&1/2&0&0 \\
+%                 0 &0 &0 &1/2&0&1/2&0 \\
+%                 0 &0 &0 &0&1/2&0&1/2 \\
+%                 0 & 0 & 0 &0 & 0 & 1 & 0 
+%             \end{matrix}    
+%             \right)
+%             .$$
+%             \begin{equation}
+%                 \begin{aligned}
+%                     1/2 s_2 &= s_1 \\
+%                     s_1+1/2 s_2 &= s_2 \\
+%                     1/2(s_2+s_4) &= s_3 \\
+%                     & \vdots \\
+%                     1/2(s_4 + s_6) &= s_5 \\
+%                     1/2 s_5 + s_7 &= s_6 \\
+%                     1/2 s_6 &= s_7 \\
+%                     \sum_{i=1}^7 s_i &= 1
+%                 \end{aligned}
+%             \end{equation}
+%             Solve the equations, we have the stationary distribution $$s = \left( 1/12 , 1/6,1/6,1/6,1/6,1/6,1/12\right)$$.
+            
+%             % I just find stationary distribution by iterate $s = sQ$, $s$ will converge to stationary distribution.
+%         \item The transition matrix is double stochastic matrix, then stationary distribution is uniform distribution and transition is symmetric. It is a simple way connecting state $-3$ to state $3$ so that the states
+%         are arranged in a circle gives the desired symmetry. The modified transition matrix $Q'$ is 
+%         $$\left(
+%         \begin{matrix}
+%             0 & 1/2 & 0 &0 & 0 & 0 & 1/2 \\
+%             1/2 &0 &1/2 &0&0&0&0 \\
+%             0 &1/2 &0 &1/2&0&0&0 \\
+%             0 &0 &1/2 &0&1/2&0&0 \\
+%             0 &0 &0 &1/2&0&1/2&0 \\
+%             0 &0 &0 &0&1/2&0&1/2 \\
+%             1/2 & 0 & 0 &0 & 0 & 1/2 & 0 
+%         \end{matrix}    
+%         \right)
+%         $$
+%     \end{enumerate}
+% \end{homeworkProblem}
+
+% \begin{homeworkProblem}[5]
+%     Harvard Textbook BH (the first edition): Chapter 11, Problem 8 \\
+%     \textbf{Solution}
+%     \begin{enumerate}[(a)]
+%         \item From state $i$, generate a proposal $j$ by choosing
+%         a uniformly random $j$ such that there is an edge between $i$ and $j$ in $G$; then go to $j$
+%         with probability $\min(d_i/d_j , 1)$, and stay at $i$ otherwise. Therefore, if $i\neq j$, $$q_{ij} = \begin{cases}
+%             \frac{1}{d_i}\min(d_i/d_j , 1) \quad \text{there is an edge i-j} \\
+%             0\quad \text{otherwise}
+%         \end{cases}$$
+%         For $i=j$,$$q_{ii} = 1-\sum_{i\neq j} q_{ij}$$ since each row of the transition matrix must sum to 1.
+%         $$\frac{1}{d_i}\min(d_i/d_j , 1) = \begin{cases}
+%             \frac{1}{d_i}\quad d_i\geq d_j \\
+%             \frac{1}{d_j}\quad d_i<d_j
+%         \end{cases}$$
+%         \item 
+%         Similarly, $$q_{ji} = \begin{cases}
+%             \frac{1}{d_j}\min(d_j/d_i , 1) \quad \text{there is an edge i-j} \\
+%             0\quad \text{otherwise}
+%         \end{cases}$$
+%         $$\frac{1}{d_j}\min(d_j/d_i , 1) = \begin{cases}
+%             \frac{1}{d_i}\quad d_i\geq d_j \\
+%             \frac{1}{d_j}\quad d_i<d_j
+%         \end{cases}$$
+%         Then we have $q_{ij} = q_{ji}$, which implies $Q$ is a symmetric and double stochastic matrix. \\
+%         The uniform distribution is stationary distribution for chain, i.e., state $j$ has stationary
+%         probability $1/M$ for all $j$.
+
+%     \end{enumerate}
+
+% \end{homeworkProblem}
+
+% \begin{homeworkProblem}[6]
+%     Harvard Textbook BH (the first edition): Chapter 11, Problem 14 \\
+%     \textbf{Solution}
+%     \begin{enumerate}[(a)]
+%         \item In transition matrix, $P(X_{n+1}=1 | X_n=0)=1,P(X_{n+1}=N-1|X_n=N)=1$,$$
+%         \begin{aligned}
+%         P(X_{n+1}=i-1 | X_n=i)&=i^2/N^2,\\ 
+%         P(X_{n+1}=i | X_n=i)&=2i(N-i)/N^2,\\
+%         P(X_{n+1}=i+1 | X_n=i)&=(N-i)^2/N^2
+%     \end{aligned}$$ for $i=1\to N-1$. So, let transition matrix $(N+1) \times (N+1)$
+%     $$\begin{aligned}
+%         Q_{12} = 1,Q_{(N+1) N}=1 \\
+%         Q_{i(i-1)} = (i-1)^2/N^2 \\
+%         Q_{ii} = 2(i-1)(N-i+1)/N^2 \\
+%         Q_{i(i+1)}=(N-i+1)^2/N^2
+%     \end{aligned}
+%     $$,other elements are zero.
+%     \item To see detail balance condition, $s_iq_{ij} = s_jq_{ji}$. For stationary distribution, we have $sQ=s$. 
+%     \begin{equation}
+%         \begin{aligned}
+%             s_i q_{i(i-1)} &= s_{i-1}q_{(i-1)i} \quad \text{for}\;i=1 \to N \\
+%             s_i i^2/N^2&=s_{i-1}(N-i+1)^2/N^2 \\ 
+%             s_i &=(N-i+1)^2/i^2 s_{i-1}
+%         \end{aligned}
+%     \end{equation}
+%     Since $\sum_{j}s_j=1$, $$\sum_{j=0}^N (s_0 + N^2s_0 + \ldots+(N-i+1)^2/i^2 s_{i-1}+\ldots+ 1/N^2 s_{N-1})= 1$$.
+%     $$s_0 = \frac{2N!}{N! N!}=\left(\begin{matrix}
+%         2N \\
+%         N
+%     \end{matrix}\right)$$
+%     Then $$s_i = \frac{\left(\begin{matrix}
+%         N \\
+%         i
+%     \end{matrix}\right)\left(\begin{matrix}
+%         N \\
+%         N-i
+%     \end{matrix}\right)}{\left(\begin{matrix}
+%         2N \\
+%         N
+%     \end{matrix}\right)}$$
+%     % \begin{equation}
+%     %     \begin{aligned}
+%     %         s_0 &= s_1(1/N^2)\\
+%     %         s
+%     %     \end{aligned}
+%     % \end{equation}
+%     \end{enumerate}
+% \end{homeworkProblem}
+% \begin{homeworkProblem}[7]
+%     Harvard Textbook BH (the first edition): Chapter 11, Problem 16 \\
+%     \textbf{Solution}
+%     \begin{enumerate}[(a)]
+%         \item Let chain have $m$ states, the transition matrix is $$Q = \left( \begin{matrix}
+%             w_{11}/v_1 & w_{12}/v_1&\ldots&w_{1m}/v_1\\
+%             &\ldots&&\\
+%             w_{m1}/v_m & w_{m2}/v_m&\ldots&w_{mm}/v_m
+%         \end{matrix}\right)=\text{diag}(1/v_1,1/v_2,\ldots,1/v_m)\left( \begin{matrix}
+%             w_{11} & w_{12}&\ldots&w_{1m}\\
+%             &\ldots&&\\
+%             w_{m1} & w_{m2}&\ldots&w_{mm}
+%         \end{matrix}\right)$$
+%         Since the chain has reversibility, then we have detail balance equation
+%         $$\begin{aligned}
+%             s_iq_{ij}=s_jq_{ji}\\
+%             s_i 1/v_i w_{ij} = s_j 1/v_j w_{ji} 
+%         \end{aligned}
+%         $$
+%         Since $w_{ij}=w_{ji}$, then the $s_i/v_i=s_j/v_j$.
+%         And we also have $\sum_j s_j =1$, so the stationary distribution of node $i$ is
+%         proportional to $v_i$.
+%         \item Let $w_{ij} = s_iq_{ij}$, then $$(1/v_i) w_{ij} = (1/\sum_{m} s_iq_{im})  s_iq_{ij} = q_{ij}/\sum_{m} s_iq_{im}=q_{ij}$$, every reversible Markov chain can be represented as a random walk on a
+%         weighted undirected network.
+%     \end{enumerate}
+% \end{homeworkProblem}
+% \begin{homeworkProblem}[8]
+%     Harvard Textbook BH (the first edition): Chapter 11, Problem 17 \\
+%     \textbf{Solution}
+%     \begin{enumerate}[(a)]
+%         \item The transition matrix of cat is $$Q_{cat} = \left( \begin{matrix}
+%             0.2 & 0.8 \\
+%             0.8 & 0.2
+%         \end{matrix} \right).$$ It is a double stochastic matrix, the stationary distribution is uniform distribution, i.e. $s_1=1/2,s_2=1/2$.
+%         The transition matrix of mouse is $$Q_{mouse}=\left( \begin{matrix}
+%             0.7 & 0.3\\
+%             0.6 & 0.4
+%         \end{matrix}\right).$$
+%         For stationary distribution, $sQ_{mouse} = s$. We have following equations 
+%         $$
+%         0.7s_1+0.6s_2 = s_1 ,\\
+%         0.3s_1 + 0.4s_2 =s_2 ,\\
+%         s_1+s_2=1
+%         $$
+%         Then the stationary distribution for mouse chain is $s_1=2/3 ,s_2=1/3$.
+%         \item It is a markov chain. Let locations of cat is a markov chain $X_n$ and locations of mouse is a markov chain $Y_n$. 
+%         \begin{equation}
+%             \begin{aligned}
+%                 P(Z_{n+1}=z_{n+1} | Z_n=z_n,Z_{n-1}=z_{n-1},\dots ,Z_{0}=z_{0}) \\
+%                 =P(X_{n+1}=x_{n+1},Y_{n+1}=y_{n+1} | Z_n=z_n,Z_{n-1}=z_{n-1},\dots ,Z_{0}=z_{0}) \\
+%                 =P(X_{n+1}=x_{n+1} | Z_n=z_n,Z_{n-1}=z_{n-1},\dots ,Z_{0}=z_{0})P(Y_{n+1}=y_{n+1} | Z_n=z_n,Z_{n-1}=z_{n-1},\dots ,Z_{0}=z_{0}) \\
+%                 =P(X_{n+1}=x_{n+1} | X_n=x_n)P(Y_{n+1}=y_{n+1} | Y_n=y_n) \\
+%                 = P(Z_{n+1}=z_{n+1} | Z_{n}=z_{n})
+%             \end{aligned}
+%         \end{equation}
+%         Given the current (cat, mouse) state, the past history of
+% where the cat and mouse were previously are irrelevant for computing the probabilities
+% of what the next state will be.
+%     \item Let cat in room 1 and mouse in room 1 is case 1, cat in room 1 and mouse in room 2 is case 2, cat in room 2 and mouse in room 1 is case 3, cat in room 2 and mouse in room 2 is case 4. 
+%     Then we can get markov chain like figure \ref{cat_mouse}. Using first step analysis, let expected time (number of steps taken) until the cat eats the mouse be $\E_x(T)$ at state $x$. 
+%     Then we have equations,
+%     $$
+%     \begin{aligned}
+%         \E_2(T) &= 0.2\cdot 0.6+0.8\cdot 0.4 + 0.2\cdot 0.4(1+\E_2(T)) + 0.8\cdot 0.6(1+\E_3(T)) \\
+%         \E_3(T) &= 0.2\cdot 0.3 + 0.8\cdot 0.7 + 0.2\cdot 0.7(1+\E_3(T)) + 0.8\cdot 0.3(1+\E_2(T))
+%     \end{aligned}
+%     $$
+%     To solve the equations, the solution is  $\E_2(T) = 335/169; \E_3(T) = 290/169$.
+%     \begin{figure}
+%         \centering
+%         \includegraphics[scale=0.2]{cat.jpg}
+%         \caption{Markov Chain of cat and mouse}
+%         \label{cat_mouse}
+%     \end{figure}
+%     \end{enumerate}
+% \end{homeworkProblem}
+% \begin{homeworkProblem}[9]
+%     Harvard Textbook BH (the first edition): Chapter 11, Problem 18 \\
+%     \textbf{Solution}
+%     \begin{figure}
+%         \centering
+%         \includegraphics[scale=0.5]{P18.jpg}
+%         \caption{Markov Chain of Problem 9}
+%         \label{cat_mouse}
+%     \end{figure}
+%     Using first step analysis, 
+%     \begin{equation}
+%         \begin{aligned}
+%             \E(T) &= 0.8\E(T) + 0.2(\E_1(T)+1) \\
+%             \E_1(T)&= 0.2(1+\E_2(T))+0.8\E_1(T) \\
+%             \E_2(T)&=0
+%         \end{aligned}
+%     \end{equation}
+%     So $\E_1(T)=1,\E(T)=2.$ \\
+%     Let $N_0$ is number of times stay in 0 state and $N_1$ is number of times stay in 1 state.
+%     $$T=T_1+1+N_0,T_1=N_1+T_2+1,T_2=0$$
+%     $T=N_1+N_0+2$
+%     $N_0$ and $N_1$ are geometric distribution with probability 0.2.  
+%     Then the variance  $$\Var (T) = \Var(N_0) + \Var(N_1) = (1-0.2)/0.2^2 + (1-0.2)/0.2^2 = 40$$
+
+
+% \end{homeworkProblem}
+% \begin{homeworkProblem}[10]
+%     Harvard Textbook BH (the first edition): Chapter 11, Problem 19 \\
+%     \textbf{Solution}
+%     \begin{enumerate}[(a)]
+%         \item The transition matrix $$Q = \left( \begin{matrix}
+%             0.5 &0.5&0&0&0&0 \\
+%             0.5&0&0.5&0&0&0\\
+%             0&0&0.5&0.3&0.2&0\\
+%             0&0&0.3&0&0&0.7\\
+%             0&0&0.2&0&0.8&0\\
+%             0&0&0&0.7&0&0.3
+%         \end{matrix}\right)$$
+%         $$N_1=\sum_j^n \mathbbm{1}_{\{X_j=1|X_0=1\}}$$
+%         The $N_1$ has a geometric distribution, $$P(N_1=n)=f_1^{n-1}(1-f_1)$$, where $f_1=P(\tau_{11}<\infty)$ and $\tau_{11}=\min(n\geq 1:X_n=1|X_0=1),\tau_{11}=\infty,\;if\; X_n\neq 1,n\geq 1$.
+%         We also have $\E(N_1) = 1/(1-f_1)$.
+%         $$\begin{aligned}
+%         \E(N)&=\sum_j^n \E(\mathbbm{1}_{\{X_j=1|X_0=1\}}) \\
+%         &= \sum_j^n P(X_j=1|X_0=1) \\
+%         &=\sum_j^n Q^j_{11}
+%     \end{aligned}$$
+%     % $$s_1 = \lim_{n\rightarrow \infty}\frac{1}{n}\sum_{j=1}^n\mathbbm{1}_{\{X_=1|X_0=1\}}\;w.p.1 $$
+%         % Using first step analysis,
+%         % \begin{equation}
+%         %     \begin{aligned}
+%         %         \E(T) = 
+%         %     \end{aligned}
+%         % \end{equation}
+%         \item We saw that for an irreducible, aperiodic Markov chain, the long time
+%         average of the fraction of time spent in a state $i$ is $s_i$. The limiting distribution is stationary distribution. Fraction of the time does the chain spend in state 3 is 3th element in the limiting distribution of markov chain. The limiting distribution of chain is $(0,0,1/4,1/4,1/4,1/4)$. And the fraction should be $1/4$. 
+%     \end{enumerate}
+% \end{homeworkProblem}
+% \begin{homeworkProblem}[11]
+%     Three server organization \\
+%     \textbf{Solution}\\
+%     The best performance for average delay should be M/M/k.\\
+%     For M/M/1 model the service time is lower, FDM can make holding time be more lower, and M/M/k can make holding time  lower then M/M/1. But FDM respective to other two model is slightly worse. 
+
+% \end{homeworkProblem}
+
+\end{document}
